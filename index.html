@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Footprint — Online Identity & Privacy Scanner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header & Dynamic URL Navigation -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <div>
+          <h1>Digital Footprint</h1>
+          <p>Online Identity & Privacy Scanner</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs" id="navTabs">
+        <button class="tab-btn active" data-route="scanner">Scanner</button>
+        <button class="tab-btn" data-route="checklist">Social Checklist</button>
+        <button class="tab-btn" data-route="dashboard">Dashboard</button>
+        <button class="tab-btn" data-route="history">History</button>
+        <button class="tab-btn" data-route="report">Report</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Live URL Indicator Bar -->
+  <div class="url-bar">
+    <div class="container url-inner">
+      <span class="url-label">ACTIVE ROUTE:</span>
+      <code id="liveUrlDisplay">index.html#scanner</code>
+    </div>
+  </div>
+
+  <main class="container main-content">
+
+    <!-- 1. SCANNER SECTION -->
+    <section id="view-scanner" class="view-section active fade-in">
+      <div class="hero-banner">
+        <h2>Discover Your Digital Exposure. Take Control of Your Privacy.</h2>
+        <p>Paste your bio, resume, post, or public text below to detect emails, phone numbers, CNIC patterns, and names.</p>
+      </div>
+
+      <div class="grid-two">
+        <!-- Input Card -->
+        <div class="card scanner-card">
+          <div class="card-header">
+            <h3>Text & Identity Analyzer</h3>
+            <button type="button" class="btn-outline" id="loadSampleBtn">Load Sample Text</button>
+          </div>
+
+          <div class="textarea-wrapper" id="scanBox">
+            <div class="radar-beam" id="radarBeam"></div>
+            <textarea id="inputText" rows="9" placeholder="Paste text here (e.g. Contact Ali Raza at ali.raza@example.com, +92 300 1234567, CNIC: 42101-1234567-1)..."></textarea>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="btn-primary" id="scanBtn">Run Privacy Scan</button>
+            <button type="button" class="btn-ghost" id="clearBtn">Clear</button>
+          </div>
+        </div>
+
+        <!-- Score & Live Results Card -->
+        <div class="card score-card">
+          <h3>Digital Exposure Score</h3>
+
+          <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 140 140">
+              <circle class="gauge-bg" cx="70" cy="70" r="56"></circle>
+              <circle class="gauge-progress" id="gaugeCircle" cx="70" cy="70" r="56"></circle>
+            </svg>
+            <div class="gauge-text">
+              <span id="scoreNumber">0</span>
+              <small>/ 100 RISK</small>
+            </div>
+          </div>
+
+          <div class="risk-badge" id="riskBadge">Awaiting Scan</div>
+
+          <div class="detection-summary">
+            <div class="stat-pill"><span>Emails</span><strong id="countEmail">0</strong></div>
+            <div class="stat-pill"><span>Phones</span><strong id="countPhone">0</strong></div>
+            <div class="stat-pill"><span>CNICs</span><strong id="countCnic">0</strong></div>
+            <div class="stat-pill"><span>Names</span><strong id="countName">0</strong></div>
+          </div>
+
+          <div class="detected-list" id="detectedItemsBox">
+            <p class="muted-text">No scan data yet. Run a scan to inspect exposed entities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SOCIAL PROFILE PRIVACY CHECKLIST -->
+    <section id="view-checklist" class="view-section fade-in">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Social Profile Privacy Checklist</h3>
+            <p class="muted-text">Toggle the privacy protections you have already enabled on your social accounts.</p>
+          </div>
+          <div class="checklist-score-box">
+            <span>Protection Level:</span>
+            <strong id="checklistScoreText">0%</strong>
+          </div>
+        </div>
+
+        <div class="checklist-grid" id="checklistContainer">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PRIVACY DASHBOARD -->
+    <section id="view-dashboard" class="view-section fade-in">
+      <div class="grid-two">
+        <div class="card">
+          <h3>Exposure Breakdown by Category</h3>
+          <p class="muted-text">Count of detected personally identifiable items in your latest scan.</p>
+          <canvas id="barChart" width="450" height="260"></canvas>
+        </div>
+
+        <div class="card">
+          <h3>Overall Risk vs. Safe Margin</h3>
+          <p class="muted-text">Combined exposure index calculated from text leaks and social settings.</p>
+          <canvas id="donutChart" width="450" height="260"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PRIVACY HISTORY (LOCALSTORAGE) -->
+    <section id="view-history" class="view-section fade-in">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Saved Scan History</h3>
+            <p class="muted-text">Previous privacy assessments stored locally in your browser.</p>
+          </div>
+          <button type="button" class="btn-outline danger-outline" id="clearHistoryBtn">Clear All History</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <p class="muted-text">No previous scans saved yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PRIVACY REPORT GENERATOR -->
+    <section id="view-report" class="view-section fade-in">
+      <div class="card report-sheet" id="printableReport">
+        <div class="card-header">
+          <div>
+            <h3>Executive Digital Exposure Report</h3>
+            <p class="muted-text" id="reportTimestamp">Generated: Not yet scanned</p>
+          </div>
+          <div class="action-row">
+            <button type="button" class="btn-outline" id="copyReportBtn">Copy Summary</button>
+            <button type="button" class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+          </div>
+        </div>
+
+        <div class="report-metrics">
+          <div class="metric-box">
+            <span>Exposure Risk Score</span>
+            <strong id="repScore">0 / 100</strong>
+          </div>
+          <div class="metric-box">
+            <span>Risk Classification</span>
+            <strong id="repLevel">Low Risk</strong>
+          </div>
+          <div class="metric-box">
+            <span>Social Protection</span>
+            <strong id="repSocial">0%</strong>
+          </div>
+        </div>
+
+        <div class="report-block">
+          <h4>1. Detected Personal Information</h4>
+          <div id="repEntities" class="muted-text">Run a scan to populate detected patterns.</div>
+        </div>
+
+        <div class="report-block">
+          <h4>2. Actionable Protection Checklist</h4>
+          <ul id="repRecommendations" class="rec-list">
+            <li>Run a scan or complete the Social Privacy Checklist to generate tailored security recommendations.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
